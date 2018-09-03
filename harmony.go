@@ -1,6 +1,6 @@
 /*
 
-Package harmony provides an easy to use command handler for discordgo
+Package harmony provides a simple and easy to use framework for discordgo bots
 
 */
 package harmony
@@ -13,14 +13,22 @@ import (
 )
 
 // New creates a new CommandHandler
-func New(prefix string, ignoreBots bool) *CommandHandler {
+func New(prefix string, ignoreBots bool, session *discordgo.Session) *CommandHandler {
 
 	return &CommandHandler{
 		Prefix:     prefix,
+		Session:    session,
 		Commands:   map[string]*Command{},
 		IgnoreBots: ignoreBots,
 	}
 
+}
+
+// Init initiates the event handling features of the library
+func (h *CommandHandler) Init() {
+
+	h.Session.AddHandler(h.onMessage)
+	
 }
 
 // AddCommand adds a command to the handler
@@ -40,8 +48,8 @@ func (h *CommandHandler) RemoveCommand(name string) {
 
 }
 
-// OnMessage handles the onMessage event of discordgo
-func (h *CommandHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+// onMessage handles the onMessage event of discordgo
+func (h *CommandHandler) onMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	splitMessage := strings.Split(m.Content, " ")
 
