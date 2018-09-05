@@ -28,6 +28,11 @@ type Command struct {
 	SingleUse bool
 }
 
+// EventHandler is a structure that contains data that helps harmony pass on events to their handlers
+//
+// Fields:
+//
+
 // Event is a generic event struct that is sent as an argument to the event handler function
 //
 // Fields:
