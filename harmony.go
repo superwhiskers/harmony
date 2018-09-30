@@ -55,7 +55,7 @@ func (h *CommandHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCre
 
 	}
 
-	if m.Content[0:len(h.Prefix)] != h.Prefix {
+	if m.Content[0:len(h.Prefix)] != h.Prefix || len(m.Content) <= len(h.Prefix) {
 
 		return
 
