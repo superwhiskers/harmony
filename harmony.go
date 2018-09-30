@@ -16,7 +16,7 @@ import (
 func New(prefix string, ignoreBots bool) *CommandHandler {
 
 	return &CommandHandler{
-		Prefix:     prefix,
+		Prefix:     strings.ToLower(prefix),
 		Commands:   map[string]*Command{},
 		IgnoreBots: ignoreBots,
 	}
@@ -43,8 +43,6 @@ func (h *CommandHandler) RemoveCommand(name string) {
 // OnMessage handles the onMessage event of discordgo
 func (h *CommandHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	splitMessage := strings.Split(m.Content, " ")
-
 	if h.OnMessageHandler != nil {
 
 		go h.OnMessageHandler(s, m)
@@ -57,7 +55,7 @@ func (h *CommandHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCre
 
 	}
 
-	if len(splitMessage[0]) < (len(h.Prefix) + 1) {
+	if strings.ToLower(m.Content[0:len(h.Prefix)-1]) != h.Prefix {
 
 		return
 
@@ -73,18 +71,13 @@ func (h *CommandHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCre
 
 	}
 
-	if splitMessage[0][0:len(h.Prefix)] != h.Prefix {
+	postPrefix := strings.Split(m.Content[len(h.Prefix):], " ")
+	if command, ok := h.Commands[strings.ToLower(postPrefix[0])]; ok {
 
-		return
-
-	}
-
-	if command, ok := h.Commands[strings.ToLower(splitMessage[0][len(h.Prefix):])]; ok {
-
-		command.Run(s, m, splitMessage[1:])
+		command.Run(s, m, postPrefix[1:])
 		if command.SingleUse == true {
 
-			h.RemoveCommand(strings.ToLower(splitMessage[0][len(h.Prefix):]))
+			h.RemoveCommand(strings.ToLower(postPrefix[0]))
 
 		}
 
