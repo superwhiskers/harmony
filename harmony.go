@@ -7,7 +7,6 @@ package harmony
 
 import (
 	// internals
-	"fmt"
 	"strings"
 	// externals
 	"github.com/bwmarrin/discordgo"
