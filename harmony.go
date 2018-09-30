@@ -7,6 +7,7 @@ package harmony
 
 import (
 	// internals
+	"fmt"
 	"strings"
 	// externals
 	"github.com/bwmarrin/discordgo"
@@ -16,7 +17,7 @@ import (
 func New(prefix string, ignoreBots bool) *CommandHandler {
 
 	return &CommandHandler{
-		Prefix:     strings.ToLower(prefix),
+		Prefix:     prefix,
 		Commands:   map[string]*Command{},
 		IgnoreBots: ignoreBots,
 	}
@@ -55,7 +56,7 @@ func (h *CommandHandler) OnMessage(s *discordgo.Session, m *discordgo.MessageCre
 
 	}
 
-	if strings.ToLower(m.Content[0:len(h.Prefix)-1]) != h.Prefix {
+	if m.Content[0:len(h.Prefix)] != h.Prefix {
 
 		return
 
